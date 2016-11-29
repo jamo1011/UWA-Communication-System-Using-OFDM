@@ -5,13 +5,13 @@ modMethod = mod;  %1=BPSK, 2=8QPSK, 3=16QAM, 4=64QAM
 offset = propagationOffset;   %Amount of delay from multipath propagation
 amplitude = offsetAmplitude;   %Magnitude of amplitude change of delayed symbols(Should be less than one)
 
-nSym = 3;  %Number of OFDM symbols to transmit
+nSym = 100;  %Number of OFDM symbols to transmit
 N = 64;  %FFT Size/Number of subcarriers
 Nsd = 64;  %Number of Data subcarriers
 Nsp = 0;   %Number of Pilot subcarriers
 ofdmBW = 20*10^6;   %Bandwidth
 
-
+load constellations;   %loads the constellation points to be used for each modulation scheme
 deltaF = ofdmBW/N;
 Tfft = 1/deltaF;   %FFT period
 Tgi = round(Tfft/4);   %Gaurd interval duration
@@ -238,8 +238,8 @@ for m=1:length(modMethod)
         if length(SNR)==1
             BPSK = [-1+0*sqrt(-1) 1+0*sqrt(-1)];
             scatterplot(r_Freq);
-            hold on;
-            scatter(real(BPSK),imag(BPSK),'+r');
+            %hold on;
+            %scatter(real(BPSK),imag(BPSK),'+r');
             title(modNames(m));
             %hold off;
         end
@@ -258,7 +258,10 @@ end
 
 figure;
 plot(SNR,simulatedBER(:,1),'r-o',SNR,simulatedBER(:,2),'b-*',SNR,simulatedBER(:,3),'s-y');
-title('Add Title');
+title('BER for Random White Noise');
+legend('BPSK','8PSK','16QAM');
+xlabel('Signal-to-Noise Ratio(dB)');
+ylabel('Bit Error Rate(%)');
 
 
 if length(modMethod)==3 && length(SNR)==1
